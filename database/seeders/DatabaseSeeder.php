@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AgenSeeder::class,
             KategoriSeeder::class,
-            KandangSeeder::class
+            KandangSeeder::class,
+            StokSeeder::class,
         ]);
     }
 }

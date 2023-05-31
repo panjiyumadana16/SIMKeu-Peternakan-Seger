@@ -21,22 +21,18 @@ class KandangController extends Controller
     public function addData(Request $request)
     {
         $this->validate($request, [
-            'jenis_produk'  => 'required',
             'kandang'       => 'required',
-            'tgl_diambil'   => 'required',
-            'stok'          => 'required|numeric',
+            'jml_ayam'      => 'required|numeric',
         ]);
 
         Kandang::create([
-            'jenis_produk'  => $request->jenis_produk,
             'kandang'       => $request->kandang,
-            'tgl_diambil'   => $request->tgl_diambil,
-            'stok'          => $request->stok,
+            'jml_ayam'      => $request->jml_ayam,
         ]);
 
         return response()->json([
             'code'      => 200,
-            'message'   => 'Berhasil menyimpan data stok kandang',
+            'message'   => 'Berhasil menyimpan data Kandang Ayam',
         ]);
     }
 
@@ -49,23 +45,19 @@ class KandangController extends Controller
     public function updateData(Request $request, $id)
     {
         $this->validate($request, [
-            'jenis_produk'  => 'required',
             'kandang'       => 'required',
-            'tgl_diambil'   => 'required',
-            'stok'          => 'required|numeric',
+            'jml_ayam'      => 'required|numeric',
         ]);
 
         Kandang::where('id', $id)
             ->update([
-                'jenis_produk'  => $request->jenis_produk,
                 'kandang'       => $request->kandang,
-                'tgl_diambil'   => $request->tgl_diambil,
-                'stok'          => $request->stok,
+                'jml_ayam'      => $request->jml_ayam,
             ]);
 
         return response()->json([
             'code'      => 200,
-            'message'   => 'Berhasil ubah data stok kandang',
+            'message'   => 'Berhasil ubah data Kandang Ayam',
         ]);
     }
 
@@ -74,7 +66,7 @@ class KandangController extends Controller
         Kandang::where('id', $id)->delete();
         return response()->json([
             'code' => 200,
-            'message' => 'Berhasil Hapus data stok kandang',
+            'message' => 'Berhasil Hapus data Kandang Ayam',
         ]);
     }
 }

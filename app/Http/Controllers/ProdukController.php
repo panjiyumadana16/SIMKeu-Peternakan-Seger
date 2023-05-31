@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Kandang;
 use App\Models\Kategori;
 use App\Models\Produk;
+use App\Models\Stok;
 use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
     public function index()
     {
-        $kandang = Kandang::all();
-        $kategori = Kategori::all();
-        return view('master.produk', compact(['kandang', 'kategori']));
+        $stok = Stok::join('kandangs', 'kandangs.id', '=', 'stoks.kandang_id')
+            ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
+            ->select('stoks.*', 'kategories.nama_kategori', 'kandangs.kandang')
+            ->get();
+        return view('master.produk', compact(['stok', 'stok']));
     }
 
     public function indexData()
     {
-        $data = Produk::join('kategories', 'kategories.id', '=', 'produks.kategori_id')
-            ->join('kandangs', 'kandangs.id', '=', 'produks.kandang_id')
-            ->select('produks.*', 'kategories.nama_kategori', 'kandangs.kandang', 'kandangs.stok')
+        $data = Produk::join('stoks', 'stoks.id', '=', 'produks.stok_id')
+            ->join('kandangs', 'kandangs.id', '=', 'stoks.kandang_id')
+            ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
+            ->select('produks.*', 'kategories.nama_kategori', 'kandangs.kandang', 'stoks.jml_stok')
             ->get();
         return response()->json($data);
     }
@@ -29,16 +33,14 @@ class ProdukController extends Controller
     {
         $this->validate($request, [
             'nama_produk'  => 'required',
-            'kategori_id'  => 'required',
+            'stok_id'      => 'required',
             'harga_jual'   => 'required|numeric',
-            'kandang_id'   => 'required',
         ]);
 
         Produk::create([
             'nama_produk'  => $request->nama_produk,
-            'kategori_id'  => $request->kategori_id,
+            'stok_id'      => $request->stok_id,
             'harga_jual'   => $request->harga_jual,
-            'kandang_id'   => $request->kandang_id,
         ]);
 
         return response()->json([
@@ -57,17 +59,15 @@ class ProdukController extends Controller
     {
         $this->validate($request, [
             'nama_produk'  => 'required',
-            'kategori_id'  => 'required',
+            'stok_id'      => 'required',
             'harga_jual'   => 'required|numeric',
-            'kandang_id'   => 'required',
         ]);
 
         Produk::where('id', $id)
             ->update([
                 'nama_produk'  => $request->nama_produk,
-                'kategori_id'  => $request->kategori_id,
+                'stok_id'      => $request->stok_id,
                 'harga_jual'   => $request->harga_jual,
-                'kandang_id'   => $request->kandang_id,
             ]);
 
         return response()->json([

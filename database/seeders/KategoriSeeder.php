@@ -16,10 +16,13 @@ class KategoriSeeder extends Seeder
     {
         DB::table('kategories')->insert([
             [
-                'nama_kategori' => 'Telur Putih'
+                'nama_kategori' => 'Telur Ayam Cream'
             ],
             [
-                'nama_kategori' => 'Telur Merah'
+                'nama_kategori' => 'Telur Ayam Merah'
+            ],
+            [
+                'nama_kategori' => 'Telur Ayam Tidak Utuh'
             ],
         ]);
     }

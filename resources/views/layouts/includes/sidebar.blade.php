@@ -39,21 +39,39 @@
                              class="nav-link {{ request()->is('*/kandang') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-home"></i>
                              <p>
-                                 Kandang (Stok)
+                                 Kandang Ayam
+                             </p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a href="{{ route('stok') }}" class="nav-link {{ request()->is('*/stok') ? ' active' : '' }}">
+                             <i class="nav-icon fas fa-egg"></i>
+                             <p>
+                                 Stok Telur
+                             </p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a href="{{ route('kategori') }}"
+                             class="nav-link {{ request()->is('*/kategori') ? ' active' : '' }}">
+                             <i class="nav-icon fas fa-tags"></i>
+                             <p>
+                                 Kategori
                              </p>
                          </a>
                      </li>
                      <li class="nav-item">
                          <a href="{{ route('produk') }}"
                              class="nav-link {{ request()->is('*/produk') ? ' active' : '' }}">
-                             <i class="nav-icon fas fa-box"></i>
+                             <i class="nav-icon fas fa-cube"></i>
                              <p>
                                  Produk
                              </p>
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="{{ route('agen') }}" class="nav-link {{ request()->is('*/agen') ? ' active' : '' }}">
+                         <a href="{{ route('agen') }}"
+                             class="nav-link {{ request()->is('*/agen') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-user-tie"></i>
                              <p>
                                  Agen
@@ -62,16 +80,9 @@
                      </li>
                      <li class="nav-header">TRANSAKSI</li>
                      <li class="nav-item">
-                         <a href="" class="nav-link">
-                             <i class="nav-icon fas fa-home"></i>
-                             <p>
-                                 Data Penjualan
-                             </p>
-                         </a>
-                     </li>
-                     <li class="nav-item">
-                         <a href="" class="nav-link">
-                             <i class="nav-icon fas fa-home"></i>
+                         <a href="{{ route('pesanan') }}"
+                             class="nav-link {{ request()->is('*/pesanan') ? ' active' : '' }}">
+                             <i class="nav-icon fas fa-clipboard-list"></i>
                              <p>
                                  Data Pesanan
                              </p>
@@ -79,7 +90,15 @@
                      </li>
                      <li class="nav-item">
                          <a href="" class="nav-link">
-                             <i class="nav-icon fas fa-home"></i>
+                             <i class="nav-icon fas fa-money-bill"></i>
+                             <p>
+                                 Data Penjualan
+                             </p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a href="" class="nav-link">
+                             <i class="nav-icon fas fa-reply"></i>
                              <p>
                                  Data Pesanan Return
                              </p>
@@ -103,37 +122,43 @@
                          </a>
                      </li>
                  </ul>
-                 </ul>
-                 </ul>
-                 </ul>
              </nav>
          @elseif(Auth::user()->role_id == 2)
              <nav class="mt-2">
                  <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                      data-accordion="false">
+                     <li class="nav-header">TRANSAKSI</li>
                      <li class="nav-item">
-                         <a href="{{ route('loginpage') }}"
-                             class="nav-link {{ request()->is('login') ? ' active' : '' }}">
-                             <i class="nav-icon fas fa-tachometer-alt"></i>
-                             <p>
-                                 Dashboard
-                             </p>
-                         </a>
-                     </li>
-                     <li class="nav-header">MASTER</li>
-                     <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('agen.dashboard') }}"
+                             class="nav-link {{ request()->is('*/dashboard') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-box"></i>
                              <p>
-                                 Ukuran
+                                 List Produk
                              </p>
                          </a>
                      </li>
                      <li class="nav-item">
+                         <a href="{{ route('agen.pesanan') }}"
+                             class="nav-link {{ request()->is('*/pesanan') ? ' active' : '' }}">
+                             <i class="nav-icon fas fa-box"></i>
+                             <p>
+                                 Pesanan
+                             </p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
                          <a href="" class="nav-link">
                              <i class="nav-icon fas fa-box"></i>
                              <p>
-                                 Gaji
+                                 Pembayaran
+                             </p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a href="" class="nav-link">
+                             <i class="nav-icon fas fa-box"></i>
+                             <p>
+                                 Return
                              </p>
                          </a>
                      </li>

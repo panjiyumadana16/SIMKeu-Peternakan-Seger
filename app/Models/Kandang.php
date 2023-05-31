@@ -11,6 +11,6 @@ class Kandang extends Model
 
     protected $table = 'kandangs';
     protected $fillable = [
-        'jenis_produk', 'kandang', 'tgl_diambil', 'stok'
+        'kandang', 'jml_ayam',
     ];
 }

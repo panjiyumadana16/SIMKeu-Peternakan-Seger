@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Kandang')
+@section('title', 'Kategori')
 
 @section('content')
     <!-- Content Wrapper. Contains page content -->
@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Master Kandang</h1>
+                        <h1 class="m-0">Master Kategori</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Master</a></li>
-                            <li class="breadcrumb-item active">Kandang</li>
+                            <li class="breadcrumb-item active">Kategori</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -31,7 +31,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title">Data Stok Kandang</h5>
+                                <h5 class="card-title">Data Kategori</h5>
 
                                 <div class="card-tools">
                                     <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalAddData">
@@ -48,8 +48,7 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%" style="text-align: center;">ID</th>
-                                                <th>Nama Kandang</th>
-                                                <th width="20%">Jumlah Ayam (ekor)</th>
+                                                <th>Nama Kategori</th>
                                                 <th width="10%">Aksi</th>
                                             </tr>
                                         </thead>
@@ -77,7 +76,7 @@
         <div class="modal-dialog-scrollable modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Tambah Data Stok Kandang</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tambah Data Produk</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -88,19 +87,11 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="kandang">Kandang</label>
+                                <label for="nama_kategori">Nama Kategori</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="Kandang" name="kandang" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="jml_ayam">Jumlah Ayam (ekor)</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <input type="number" placeholder="Jumlah Ayam" name="jml_ayam" class="form-control"
-                                            min="1">
+                                        <input type="text" placeholder="nama Kategori" name="nama_kategori"
+                                            class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +111,7 @@
         <div class="modal-dialog-scrollable modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Edit Data Stok Kandang</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit Data Produk</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -133,19 +124,11 @@
                         <input type="hidden" name="id">
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="kandang">Kandang</label>
+                                <label for="nama_kategori">Nama Kategori</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="Kandang" name="kandang" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="jml_ayam">Jumlah Ayam (ekor)</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <input type="number" placeholder="Jumlah Ayam" name="jml_ayam"
-                                            class="form-control" min="1">
+                                        <input type="text" placeholder="nama Kategori" name="nama_kategori"
+                                            class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -214,20 +197,36 @@
             timerProgressBar: true,
         })
 
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp ' + rupiah : '');
+        }
+
         getData()
 
         function getData() {
             var htmlview
             $.ajax({
-                url: "{{ route('kandang.data') }}",
+                url: "{{ route('kategori.data') }}",
                 type: 'GET',
                 success: function(res) {
                     $('tbody').html('')
                     $.each(res, function(i, data) {
                         htmlview += `<tr>
                         <td style="text-align: center;">` + data.id + `</td>
-                        <td>` + data.kandang + `</td>
-                        <td style='text-align: right;'>` + data.jml_ayam + `</td>
+                        <td>` + data.nama_kategori + `</td>
                         <td>
                           <button class="btn btn-info btn-sm" title="Edit Data!" onClick="detailData('` + data
                             .id + `')"> <i class="fas fa-pencil-alt"></i>
@@ -248,7 +247,7 @@
 
         function addData() {
             $.ajax({
-                url: "{{ route('kandang.add') }}",
+                url: "{{ route('kategori.add') }}",
                 type: "POST",
                 data: $('#formAddData').serialize(),
                 dataType: 'json',
@@ -281,7 +280,7 @@
         }
 
         function detailData(id) {
-            var _url = "{{ route('kandang.detail', ':id') }}"
+            var _url = "{{ route('kategori.detail', ':id') }}"
             _url = _url.replace(':id', id)
 
             $.ajax({
@@ -300,7 +299,7 @@
 
         function updateData() {
             var id = $('#formEditData').data('id')
-            var _url = "{{ route('kandang.update', ':id') }}"
+            var _url = "{{ route('kategori.update', ':id') }}"
             _url = _url.replace(':id', id)
 
             $.ajax({
@@ -360,7 +359,7 @@
                 })
                 .then((result) => {
                     if (result.isConfirmed) {
-                        var _url = "{{ route('kandang.delete', ':id') }}";
+                        var _url = "{{ route('kategori.delete', ':id') }}";
                         _url = _url.replace(':id', id)
                         var _token = $('meta[name="csrf-token"]').attr('content');
                         $.ajax({

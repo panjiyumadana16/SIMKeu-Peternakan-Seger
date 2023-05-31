@@ -49,9 +49,9 @@
                                             <tr>
                                                 <th width="5%" style="text-align: center;">ID</th>
                                                 <th>Nama Produk</th>
+                                                <th>Stok dari Kandang</th>
                                                 <th>Kategori</th>
-                                                <th>Harga Jual /kg</th>
-                                                <th>Kandang</th>
+                                                <th>Harga Jual /butir</th>
                                                 <th>Stok</th>
                                                 <th width="10%">Aksi</th>
                                             </tr>
@@ -99,14 +99,18 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-12">
-                                <label for="kategori_id">Kategori</label>
+                                <label for="stok_id">Stok dari kandang</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <select name="kategori_id" id="" class="form-control">
-                                            <option value="" disabled> Pilih Kategori</option>
-                                            @foreach ($kategori as $data)
-                                                <option value="{{ $data->id }}">{{ $data->nama_kategori }}</option>
+                                        <select name="stok_id" id="" class="form-control">
+                                            <option value="" disabled> Pilih Stok Kandang</option>
+                                            @foreach ($stok as $data)
+                                                <option value="{{ $data->id }}">{{ $data->kandang }} -
+                                                    {{ $data->nama_kategori }} ( STOK :
+                                                    {{ $data->jml_stok }} butir )
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -114,25 +118,11 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="harga_jual">Harga Jual per kg</label>
+                                <label for="harga_jual">Harga Jual per butir (Rp)</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <input type="number" name="harga_jual" class="form-control" min="0">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="kandang_id">Stok dari kandang</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <select name="kandang_id" id="" class="form-control">
-                                            <option value="" disabled> Pilih Stok Kandang</option>
-                                            @foreach ($kandang as $data)
-                                                <option value="{{ $data->id }}">{{ $data->kandang }}
-                                                    ({{ $data->jenis_produk }} - {{ $data->stok }} kg)
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="number" name="harga_jual" class="form-control" min="0"
+                                            value="0">
                                     </div>
                                 </div>
                             </div>
@@ -173,14 +163,18 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-12">
-                                <label for="kategori_id">Kategori</label>
+                                <label for="stok_id">Stok dari kandang</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <select name="kategori_id" id="" class="form-control">
-                                            <option value="" disabled> Pilih Kategori</option>
-                                            @foreach ($kategori as $data)
-                                                <option value="{{ $data->id }}">{{ $data->nama_kategori }}</option>
+                                        <select name="stok_id" id="" class="form-control">
+                                            <option value="" disabled> Pilih Stok Kandang</option>
+                                            @foreach ($stok as $data)
+                                                <option value="{{ $data->id }}">{{ $data->kandang }} -
+                                                    {{ $data->nama_kategori }} ( STOK :
+                                                    {{ $data->jml_stok }} butir )
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -188,25 +182,11 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="harga_jual">Harga Jual per kg</label>
+                                <label for="harga_jual">Harga Jual per butir (Rp)</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <input type="number" name="harga_jual" class="form-control" min="0">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="kandang_id">Stok dari kandang</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <select name="kandang_id" id="" class="form-control">
-                                            <option value="" disabled> Pilih Stok Kandang</option>
-                                            @foreach ($kandang as $data)
-                                                <option value="{{ $data->id }}">{{ $data->kandang }}
-                                                    ({{ $data->jenis_produk }} - {{ $data->stok }} kg)
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="number" name="harga_jual" class="form-control" min="0"
+                                            value="0">
                                     </div>
                                 </div>
                             </div>
@@ -276,6 +256,7 @@
         })
 
         function formatRupiah(angka, prefix) {
+            var angka = angka.toString();
             var number_string = angka.replace(/[^,\d]/g, '').toString(),
                 split = number_string.split(','),
                 sisa = split[0].length % 3,
@@ -289,7 +270,7 @@
             }
 
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? 'Rp ' + rupiah : '');
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
         }
 
         getData()
@@ -302,14 +283,14 @@
                 success: function(res) {
                     $('tbody').html('')
                     $.each(res, function(i, data) {
-                        let harga = formatRupiah(data.harga_jual, 'Rp. ');
+                        let harga = formatRupiah(data.harga_jual, 'Rp ');
                         htmlview += `<tr>
                         <td style="text-align: center;">` + data.id + `</td>
                         <td>` + data.nama_produk + `</td>
+                        <td>` + data.kandang + `</td>
                         <td>` + data.nama_kategori + `</td>
                         <td style="text-align: right;">` + harga + `</td>
-                        <td>` + data.kandang + `</td>
-                        <td style='text-align: right;'>` + data.stok + ` kg</td>
+                        <td style='text-align: right;'>` + data.jml_stok + ` butir</td>
                         <td>
                           <button class="btn btn-info btn-sm" title="Edit Data!" onClick="detailData('` + data
                             .id + `')"> <i class="fas fa-pencil-alt"></i>

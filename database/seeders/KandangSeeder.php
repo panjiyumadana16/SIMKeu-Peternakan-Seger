@@ -17,16 +17,12 @@ class KandangSeeder extends Seeder
     {
         DB::table('kandangs')->insert([
             [
-                'jenis_produk'  => 'Telur Ayam Tedu',
                 'kandang'       => 'Kandang Ayam Tedu',
-                'tgl_diambil'   => Carbon::now(),
-                'stok'          => 500,
+                'jml_ayam'      => 200,
             ],
             [
-                'jenis_produk'  => 'Telur Ayam Horen',
                 'kandang'       => 'Kandang Ayam Horen',
-                'tgl_diambil'   => Carbon::now(),
-                'stok'          => 100,
+                'jml_ayam'      => 250,
             ]
         ]);
     }
