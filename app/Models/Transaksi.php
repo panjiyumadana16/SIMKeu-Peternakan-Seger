@@ -10,6 +10,6 @@ class Transaksi extends Model
     use HasFactory;
     protected $table = 'transaksies';
     protected $fillable = [
-        'user_id', 'tgl_transaksi', 'jenis_pengiriman', 'alamat_pengiriman', 'total', 'status'
+        'user_id', 'tgl_transaksi', 'jenis_pengiriman', 'alamat_pengiriman', 'ongkir', 'total', 'status'
     ];
 }

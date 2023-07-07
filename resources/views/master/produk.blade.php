@@ -51,7 +51,7 @@
                                                 <th>Nama Produk</th>
                                                 <th>Stok dari Kandang</th>
                                                 <th>Kategori</th>
-                                                <th>Harga Jual /butir</th>
+                                                <th>Harga Jual /kg</th>
                                                 <th>Stok</th>
                                                 <th width="10%">Aksi</th>
                                             </tr>
@@ -109,7 +109,7 @@
                                             @foreach ($stok as $data)
                                                 <option value="{{ $data->id }}">{{ $data->kandang }} -
                                                     {{ $data->nama_kategori }} ( STOK :
-                                                    {{ $data->jml_stok }} butir )
+                                                    {{ $data->jml_stok }} kg )
                                                 </option>
                                             @endforeach
                                         </select>
@@ -118,7 +118,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="harga_jual">Harga Jual per butir (Rp)</label>
+                                <label for="harga_jual">Harga Jual /kg (Rp)</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
                                         <input type="number" name="harga_jual" class="form-control" min="0"
@@ -173,7 +173,7 @@
                                             @foreach ($stok as $data)
                                                 <option value="{{ $data->id }}">{{ $data->kandang }} -
                                                     {{ $data->nama_kategori }} ( STOK :
-                                                    {{ $data->jml_stok }} butir )
+                                                    {{ $data->jml_stok }} kg )
                                                 </option>
                                             @endforeach
                                         </select>
@@ -182,7 +182,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="harga_jual">Harga Jual per butir (Rp)</label>
+                                <label for="harga_jual">Harga Jual /kg (Rp)</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
                                         <input type="number" name="harga_jual" class="form-control" min="0"
@@ -290,7 +290,7 @@
                         <td>` + data.kandang + `</td>
                         <td>` + data.nama_kategori + `</td>
                         <td style="text-align: right;">` + harga + `</td>
-                        <td style='text-align: right;'>` + data.jml_stok + ` butir</td>
+                        <td style='text-align: right;'>` + data.jml_stok + ` kg</td>
                         <td>
                           <button class="btn btn-info btn-sm" title="Edit Data!" onClick="detailData('` + data
                             .id + `')"> <i class="fas fa-pencil-alt"></i>

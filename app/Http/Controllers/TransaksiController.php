@@ -28,11 +28,17 @@ class TransaksiController extends Controller
             'alamat_pengiriman' => 'required',
         ]);
 
+        $ongkir = 0;
+        if ($request->jenis_pengiriman == 'Kirim ke Alamat Pengiriman') {
+            $ongkir = 5000;
+        }
+
         Transaksi::create([
             'user_id'           => Auth::user()->id,
             'tgl_transaksi'     => Carbon::now(),
             'jenis_pengiriman'  => $request->jenis_pengiriman,
             'alamat_pengiriman' => $request->alamat_pengiriman,
+            'ongkir'            => $ongkir,
             'total'             => 0,
         ]);
 
@@ -50,7 +56,7 @@ class TransaksiController extends Controller
         }
 
         Transaksi::where('id', $get_last_tr->id)->update([
-            'total' => $total,
+            'total' => $total + $get_last_tr->ongkir,
         ]);
 
         TempPesanan::where('user_id', Auth::user()->id)->delete();
@@ -157,4 +163,8 @@ class TransaksiController extends Controller
             'message'   => 'Berhasil Merubah Status Pesanan!',
         ]);
     }
+
+    // function checkoutPesanan() {
+
+    // }
 }

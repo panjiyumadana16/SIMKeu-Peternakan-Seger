@@ -130,8 +130,12 @@
                             </thead>
                             <tbody id="dtl_data">
                             </tbody>
-                            <tfoot class="bg-gradient-lightblue">
+                            <tfoot>
                                 <tr>
+                                    <td class="text-right" colspan="2">Ongkir :</td>
+                                    <td id="dtl_ongkir" class="text-right"></td>
+                                </tr>
+                                <tr class="bg-gradient-lightblue">
                                     <th class="text-right" colspan="2">Total :</th>
                                     <th id="dtl_total" class="text-right"></th>
                                 </tr>
@@ -292,6 +296,8 @@
                     $('#dtl_jns').html(res.transaksi.jenis_pengiriman)
                     $('#dtl_alamat').html(res.transaksi.alamat_pengiriman)
                     $('#dtl_status').html(res.transaksi.status)
+                    let ongkir = formatRupiah(res.transaksi.ongkir, 'Rp. ');
+                    $('#dtl_ongkir').html(ongkir)
                     let total = formatRupiah(res.transaksi.total, 'Rp. ');
                     $('#dtl_total').html(total)
 
@@ -300,8 +306,8 @@
                         let subtotal = formatRupiah(data.sub_total_harga, 'Rp. ');
                         dtlView += `
                         <tr>
-                            <td>` + data.nama_produk + ` - (` + data.nama_kategori + `) - Rp. ` + data.harga_jual + ` /butir</td>
-                            <td>` + data.jumlah_produk + ` butir</td>
+                            <td>` + data.nama_produk + ` - (` + data.nama_kategori + `) - Rp. ` + data.harga_jual + ` /kg</td>
+                            <td>` + data.jumlah_produk + ` kg</td>
                             <td class="text-right">` + subtotal + `</td>
                         </tr>
                         `

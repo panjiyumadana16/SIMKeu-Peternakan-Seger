@@ -39,8 +39,8 @@
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body px-3 py-2">
-                                    <h5 class="float-left">Stok : {{ $val->jml_stok }} butir</h5>
-                                    <h5 class="text-success float-right">Rp. {{ $val->harga_jual }} /butir
+                                    <h5 class="float-left">Stok : {{ $val->jml_stok }} kg</h5>
+                                    <h5 class="text-success float-right">Rp. {{ $val->harga_jual }} /kg
                                     </h5>
                                 </div>
                                 <!-- ./card-body -->

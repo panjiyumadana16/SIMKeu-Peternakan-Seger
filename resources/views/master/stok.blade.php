@@ -51,7 +51,7 @@
                                                 <th>Asal Stok</th>
                                                 <th>Kategori Stok</th>
                                                 <th>Tanggal Diambil</th>
-                                                <th>Jumlah Stok (butir)</th>
+                                                <th>Jumlah Stok (kg)</th>
                                                 <th width="10%">Aksi</th>
                                             </tr>
                                         </thead>
@@ -126,7 +126,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="jml_stok">Jumlah Stok (butir)</label>
+                                <label for="jml_stok">Jumlah Stok (kg)</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
                                         <input type="number" class="form-control" name="jml_stok" min="0"
@@ -189,7 +189,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="jml_stok">Jumlah Stok (butir)</label>
+                                <label for="jml_stok">Jumlah Stok (kg)</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
                                         <input type="number" class="form-control" name="jml_stok" min="0"
@@ -294,7 +294,7 @@
                         <td>` + data.kandang + `</td>
                         <td>` + data.nama_kategori + `</td>
                         <td>` + data.tgl_diambil + `</td>
-                        <td style="text-align: right;">` + data.jml_stok + `</td>
+                        <td style="text-align: right;">` + data.jml_stok + ` kg</td>
                         <td>
                           <button class="btn btn-info btn-sm" title="Edit Data!" onClick="detailData('` + data
                             .id + `')"> <i class="fas fa-pencil-alt"></i>

@@ -257,13 +257,18 @@
         updateTotal()
 
         function updateTotal() {
+            var jnsPengiriman = $('select[name="jenis_pengiriman"]').val()
             $.ajax({
                 url: "{{ route('agen.keranjang.gettotal') }}",
                 type: "GET",
                 dataType: 'json',
                 success: function(res) {
                     if (res.code == 200) {
-                        $('#total_pembayaran').html('Rp. ' + res.total)
+                        var total = res.total
+                        if (jnsPengiriman == 'Kirim ke Alamat Pengiriman') {
+                            total = total + 5000
+                        }
+                        $('#total_pembayaran').html('Rp. ' + total)
                     }
                 },
                 error: function(err) {
@@ -271,6 +276,11 @@
                 }
             })
         }
+
+        $('select[name="jenis_pengiriman"]').on('change', function(e) {
+            e.preventDefault()
+            updateTotal()
+        })
 
         function addKeranjang(produk_id) {
             let user_id = {{ Auth::user()->id }}
