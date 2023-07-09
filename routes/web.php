@@ -104,6 +104,9 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('data', [TransaksiController::class, 'indexDataAgen'])->name('agen.pesanan.data');
             Route::post('', [TransaksiController::class, 'addData'])->name('agen.checkout.add');
             Route::get('{id}', [TransaksiController::class, 'detailData'])->name('agen.pesanan.detail');
+
+            Route::get('bayar/{id}', [TransaksiController::class, 'bayarPesanan'])->name('agen.pesanan.bayar');
+            Route::get('{id}/{to_status}', [TransaksiController::class, 'changeStatus'])->name('agen.pesanan.status.change');
         });
     });
 });

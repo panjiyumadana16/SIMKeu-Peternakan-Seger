@@ -30,7 +30,7 @@ class TransaksiController extends Controller
 
         $ongkir = 0;
         if ($request->jenis_pengiriman == 'Kirim ke Alamat Pengiriman') {
-            $ongkir = 5000;
+            $ongkir = 10000;
         }
 
         Transaksi::create([
@@ -164,7 +164,37 @@ class TransaksiController extends Controller
         ]);
     }
 
-    // function checkoutPesanan() {
+    function bayarPesanan($id)
+    {
+        $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
+            ->select('transaksies.*', 'agens.nama', 'agens.no_hp')
+            ->where('transaksies.id', $id)->first();
 
-    // }
+        // Set your Merchant Server Key
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        \Midtrans\Config::$isProduction = false;
+        // Set sanitization on (default)
+        \Midtrans\Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        \Midtrans\Config::$is3ds = true;
+
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $transaksi->id,
+                'gross_amount' => $transaksi->total,
+            ),
+            'customer_details' => array(
+                'first_name' => $transaksi->nama,
+                'phone' => $transaksi->no_hp,
+            ),
+        );
+
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+        return response()->json([
+            'code'      => 200,
+            'snapToken' => $snapToken,
+        ]);
+    }
 }

@@ -1,7 +1,7 @@
  <!-- Main Sidebar Container -->
  <aside class="main-sidebar sidebar-dark-primary elevation-4">
      <!-- Brand Logo -->
-     <a href="{{ route('dashboard') }}" class="brand-link bg-secondary">
+     <a href="#" class="brand-link bg-secondary">
          <img src="" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
          <span class="brand-text font-weight-light">Peternakan Seger</span>
      </a>
@@ -131,7 +131,7 @@
                      <li class="nav-item">
                          <a href="{{ route('agen.dashboard') }}"
                              class="nav-link {{ request()->is('*/dashboard') ? ' active' : '' }}">
-                             <i class="nav-icon fas fa-box"></i>
+                             <i class="nav-icon fas fa-egg"></i>
                              <p>
                                  List Produk
                              </p>
@@ -140,25 +140,17 @@
                      <li class="nav-item">
                          <a href="{{ route('agen.pesanan') }}"
                              class="nav-link {{ request()->is('*/pesanan') ? ' active' : '' }}">
-                             <i class="nav-icon fas fa-box"></i>
+                             <i class="nav-icon fas fa-clipboard-list"></i>
                              <p>
-                                 Pesanan
+                                 Pesanan & Pembayaran
                              </p>
                          </a>
                      </li>
                      <li class="nav-item">
                          <a href="" class="nav-link">
-                             <i class="nav-icon fas fa-box"></i>
+                             <i class="nav-icon fas fa-reply"></i>
                              <p>
-                                 Pembayaran
-                             </p>
-                         </a>
-                     </li>
-                     <li class="nav-item">
-                         <a href="" class="nav-link">
-                             <i class="nav-icon fas fa-box"></i>
-                             <p>
-                                 Return
+                                 Pesanan Return
                              </p>
                          </a>
                      </li>

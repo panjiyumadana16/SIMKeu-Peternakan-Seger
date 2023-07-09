@@ -266,7 +266,7 @@
                     if (res.code == 200) {
                         var total = res.total
                         if (jnsPengiriman == 'Kirim ke Alamat Pengiriman') {
-                            total = total + 5000
+                            total = total + 10000
                         }
                         $('#total_pembayaran').html('Rp. ' + total)
                     }
