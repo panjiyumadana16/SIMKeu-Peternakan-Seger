@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KandangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\TempPesananController;
 use App\Http\Controllers\TransaksiController;
@@ -86,6 +87,12 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('{id}', [TransaksiController::class, 'detailData'])->name('pesanan.detail');
             Route::get('{id}/{to_status}', [TransaksiController::class, 'changeStatus'])->name('pesanan.status.change');
         });
+
+        Route::group(['prefix' => 'penjualan'], function () {
+            Route::get('', [TransaksiController::class, 'indexPenjualan'])->name('penjualan');
+            Route::get('data', [TransaksiController::class, 'indexDataPenjualan'])->name('penjualan.data');
+            Route::get('{id}', [TransaksiController::class, 'detailData'])->name('penjualan.detail');
+        });
     });
     Route::group(['roles' => 'Agen', 'prefix' => 'agen'], function () {
         Route::get('dashboard', [HomeController::class, 'listProduk'])->name('agen.dashboard');
@@ -107,6 +114,13 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
 
             Route::get('bayar/{id}', [TransaksiController::class, 'bayarPesanan'])->name('agen.pesanan.bayar');
             Route::get('{id}/{to_status}', [TransaksiController::class, 'changeStatus'])->name('agen.pesanan.status.change');
+        });
+
+        Route::group(['prefix' => 'return'], function () {
+            Route::get('{id}', [ReturnController::class, 'insert'])->name('agen.return.form');
+            Route::post('', [ReturnController::class, 'create'])->name('agen.return.create');
+            Route::get('', [ReturnController::class, 'indexAgen'])->name('agen.return');
+            Route::get('data/agen', [ReturnController::class, 'indexDataAgen'])->name('agen.return.data');
         });
     });
 });

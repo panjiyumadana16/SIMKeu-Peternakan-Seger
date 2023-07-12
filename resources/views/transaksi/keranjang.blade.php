@@ -189,6 +189,8 @@
             ]
         };
 
+        $.fn.dataTable.ext.errMode = 'none'
+
         var Notif = Swal.mixin({
             toast: true,
             position: 'top-end',

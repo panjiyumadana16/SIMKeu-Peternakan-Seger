@@ -89,7 +89,8 @@
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('penjualan') }}"
+                             class="nav-link {{ request()->is('*/penjualan') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-money-bill"></i>
                              <p>
                                  Data Penjualan
@@ -147,7 +148,8 @@
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('agen.return') }}"
+                             class="nav-link {{ request()->is('*/return') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-reply"></i>
                              <p>
                                  Pesanan Return

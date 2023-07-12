@@ -279,6 +279,8 @@
             ]
         };
 
+        $.fn.dataTable.ext.errMode = 'none'
+
         var Notif = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -388,6 +390,7 @@
                 dataType: 'json',
                 success: function(res) {
                     if (res.code == 200) {
+                        $('#formEditData').attr('data-id', '')
                         $('#formEditData').trigger('reset')
                         $('#modalEditData').modal('hide')
 

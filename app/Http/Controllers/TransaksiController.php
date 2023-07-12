@@ -112,10 +112,31 @@ class TransaksiController extends Controller
         return view('transaksi.pesanan');
     }
 
+    public function indexPenjualan()
+    {
+        return view('transaksi.penjualan');
+    }
+
     public function indexData()
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')->get();
+            ->select('transaksies.*', 'agens.nama')->where('transaksies.status', '!=', 'Selesai')->get();
+        $data = [];
+        $i = 0;
+        foreach ($transaksi as $dt) {
+            $detail_transaksi = DetailTransaksi::where('transaksi_id', $dt->id)->get();
+            $data[$i] = $dt;
+            $data[$i]['jumlah_pesanan'] = count($detail_transaksi);
+            $i++;
+        }
+
+        return response()->json($data);
+    }
+
+    public function indexDataPenjualan()
+    {
+        $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
+            ->select('transaksies.*', 'agens.nama')->where('transaksies.status', '=', 'Selesai')->get();
         $data = [];
         $i = 0;
         foreach ($transaksi as $dt) {
