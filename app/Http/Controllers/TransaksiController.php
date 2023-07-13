@@ -120,14 +120,16 @@ class TransaksiController extends Controller
     public function indexData()
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')->where('transaksies.status', '!=', 'Selesai')->get();
+            ->select('transaksies.*', 'agens.nama')->get();
         $data = [];
         $i = 0;
         foreach ($transaksi as $dt) {
-            $detail_transaksi = DetailTransaksi::where('transaksi_id', $dt->id)->get();
-            $data[$i] = $dt;
-            $data[$i]['jumlah_pesanan'] = count($detail_transaksi);
-            $i++;
+            if ($dt->status != 'Selesai' && $dt->status != 'Selesai (Return)') {
+                $detail_transaksi = DetailTransaksi::where('transaksi_id', $dt->id)->get();
+                $data[$i] = $dt;
+                $data[$i]['jumlah_pesanan'] = count($detail_transaksi);
+                $i++;
+            }
         }
 
         return response()->json($data);
@@ -136,7 +138,7 @@ class TransaksiController extends Controller
     public function indexDataPenjualan()
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')->where('transaksies.status', '=', 'Selesai')->get();
+            ->select('transaksies.*', 'agens.nama')->where('transaksies.status', 'like', '%Selesai%')->get();
         $data = [];
         $i = 0;
         foreach ($transaksi as $dt) {

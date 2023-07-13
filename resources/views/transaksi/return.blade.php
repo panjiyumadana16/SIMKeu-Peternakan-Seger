@@ -1,20 +1,19 @@
 @extends('layouts.app')
-@section('title', 'Data Penjualan')
+@section('title', 'Daftar Permintaan Return')
 
 @section('content')
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Data Penjualan</h1>
+                        <h1 class="m-0">Data Pesanan</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Transaksi</a></li>
-                            <li class="breadcrumb-item active">Data Penjualan</li>
+                            <li class="breadcrumb-item active">Data Pesanan</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -25,11 +24,13 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
+                <!-- Info boxes -->
+                <hr>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title">Data Penjualan</h5>
+                                <h5 class="card-title">Data Permintaan Return</h5>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
@@ -40,14 +41,13 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%" style="text-align: center;">ID</th>
-                                                <th>Tangal Pesanan</th>
+                                                <th>Tangal Return</th>
                                                 <th>Atas Nama</th>
-                                                <th>Jumlah Pesanan</th>
+                                                <th>Jumlah Item</th>
                                                 <th>Total</th>
-                                                <th>Jenis Pengiriman</th>
-                                                <th>Alamat Pengiriman</th>
-                                                <th>Status Pesanan</th>
-                                                <th width="10%">Aksi</th>
+                                                <th>Alasan Return</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbl_data_body">
@@ -74,7 +74,7 @@
         <div class="modal-dialog-scrollable modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-gradient-info">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Detail Penjualan</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Detail Return</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -101,17 +101,7 @@
                                 <td id="dtl_atas_nama"></td>
                             </tr>
                             <tr>
-                                <td width="20%">Jenis Pengiriman</td>
-                                <td>:</td>
-                                <td id="dtl_jns"></td>
-                            </tr>
-                            <tr>
-                                <td width="20%">Alamat Pengiriman</td>
-                                <td>:</td>
-                                <td id="dtl_alamat"></td>
-                            </tr>
-                            <tr>
-                                <td width="20%">Status Pesanan</td>
+                                <td width="20%">Status Return</td>
                                 <td>:</td>
                                 <td id="dtl_status"></td>
                             </tr>
@@ -133,8 +123,8 @@
                             <tbody id="dtl_data">
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <td class="text-right" colspan="2">Ongkir :</td>
+                                <tr class="text-danger border-danger">
+                                    <td class="text-right" colspan="2">Biaya Return 10% :</td>
                                     <td id="dtl_ongkir" class="text-right"></td>
                                 </tr>
                                 <tr class="bg-gradient-lightblue">
@@ -151,11 +141,10 @@
             </div>
         </div>
     </div>
-    </div>
 @endsection
 
 @section('script')
-    <script>
+    <script type="text/javascript">
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -229,52 +218,60 @@
         function getData() {
             var htmlview
             $.ajax({
-                url: "{{ route('penjualan.data') }}",
+                url: "{{ route('return.data') }}",
                 type: 'GET',
                 success: function(res) {
                     $('#tbl_data_tbody').html('')
                     $.each(res, function(i, data) {
                         let total = formatRupiah(data.total, 'Rp. ');
-                        let to_status = 0;
                         let btn_color = 'btn-light';
-
                         if (data.status == 'Menunggu Konfirmasi') {
-                            to_status = 1
-                            btn_color = 'btn-info';
+                            btn_color = 'btn-secondary';
                         }
 
-                        if (data.status == 'Belum Dibayar') {
-                            to_status = 2
-                            btn_color = 'btn-warning';
+                        if (data.status == 'Disetujui') {
+                            btn_color = 'btn-success';
                         }
 
-                        if (data.status == 'Proses Pengiriman / Pengambilan') {
-                            to_status = 3
-                            btn_color = 'btn-primary';
-                        }
-
-                        if (data.status == 'Selesai' || data.status == 'Selesai (Return)') {
-                            btn_color = 'btn-success disabled';
+                        if (data.status == 'Ditolak') {
+                            btn_color = 'btn-danger';
                         }
 
                         htmlview += `<tr>
                         <td style="text-align: center;">` + data.id + `</td>
-                        <td>` + data.tgl_transaksi + `</td>
+                        <td>` + data.tgl_return + `</td>
                         <td>` + data.nama + `</td>
-                        <td>` + data.jumlah_pesanan + `</td>
+                        <td>` + data.jumlah_return + `</td>
                         <td style="text-align: right;">` + total + `</td>
-                        <td>` + data.jenis_pengiriman + `</td>
-                        <td>` + data.alamat_pengiriman + `</td>
-                        <td>
-                          <button class="btn ` + btn_color + ` btn-sm container" title="Status Transaksi!">
-                                ` + data.status + `
+                        <td>` + data.alasan_return + `</td>
+                        <td>`
+
+                        if (data.status == 'Menunggu Konfirmasi') {
+                            htmlview += `
+                            <button class="btn btn-outline-success btn-sm container" 
+                                 onClick="changeStatus(` + data.transaksi_id + `,1)">
+                                 Setujui Return
                           </button>
-                        </td>
-                        <td>
-                          <button class="btn btn-info btn-sm" title="Detail Transaksi!" onClick="detailData('` +
-                            data.id + `')"> <i class="fas fa-eye-open"> Detail Pesanan</i>
+                          <hr class="my-1">
+                          <button class="btn btn-outline-danger btn-sm container" 
+                                 onClick="changeStatus(` + data.transaksi_id + `,2)">
+                                 Tolak Return
                           </button>
-                        </td>
+                          `
+                        } else {
+                            htmlview += `
+                            <button class="btn ` + btn_color + ` btn-sm container">
+                                 ` + data.status + `
+                          </button>
+                            `
+                        }
+
+                        htmlview += `</td>
+                        <td>
+                        <button class="btn btn-info btn-sm" title="Detail Transaksi!" onClick="detailData('` +
+                            data.transaksi_id + `')"> <i class="fas fa-eye-open"> Detail</i>
+                          </button>
+                          </td>
                        </tr>`
                     });
 
@@ -286,7 +283,7 @@
         }
 
         function detailData(id) {
-            var _url = "{{ route('penjualan.detail', ':id') }}"
+            var _url = "{{ route('return.detail', ':id') }}"
             _url = _url.replace(':id', id)
 
             var dtlView
@@ -301,26 +298,73 @@
                     $('#dtl_atas_nama').html(res.transaksi.nama)
                     $('#dtl_jns').html(res.transaksi.jenis_pengiriman)
                     $('#dtl_alamat').html(res.transaksi.alamat_pengiriman)
-                    $('#dtl_status').html(res.transaksi.status)
-                    let total = formatRupiah(res.transaksi.total, 'Rp. ');
-                    $('#dtl_total').html(total)
-                    let ongkir = formatRupiah(res.transaksi.ongkir, 'Rp. ');
-                    $('#dtl_ongkir').html(ongkir)
+
+                    let total2 = 0;
 
                     $('#dtl_data').html('')
                     $.each(res.detail_transaksi, function(i, data) {
-                        let subtotal = formatRupiah(data.sub_total_harga, 'Rp. ');
+                        let subtotal = data.jml_return * data.harga_jual;
                         dtlView += `
                         <tr>
                             <td>` + data.nama_produk + ` - (` + data.nama_kategori + `) - Rp. ` + data.harga_jual + ` /kg</td>
-                            <td>` + data.jumlah_produk + ` kg</td>
-                            <td class="text-right">` + subtotal + `</td>
+                            <td>` + data.jml_return + ` kg</td>
+                            <td class="text-right">` + formatRupiah(subtotal, 'Rp. ') + `</td>
                         </tr>
                         `
+                        total2 += subtotal
+
+                        $('#dtl_status').html(data.status)
+
+                        let total = formatRupiah(data.total, 'Rp. ');
+                        $('#dtl_total').html(total)
                     })
+
+                    let biaya = total2 * 0.1
+
+                    let ongkir = formatRupiah(biaya, '- Rp. ');
+                    $('#dtl_ongkir').html('- ' + ongkir)
+
                     $('#dtl_data').html(dtlView)
                 }
             })
+        }
+
+        function changeStatus(id, toStatus) {
+            Swal.fire({
+                    title: "Apakah anda yakin ingin melakukan konfirmasi pada permintaan return ini?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Konfrimasi!",
+                    cancelButtonText: "Tidak",
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        var _url = "{{ route('return.status.change', [':id', ':to_status']) }}";
+                        _url = _url.replace(':id', id);
+                        _url = _url.replace(':to_status', toStatus);
+
+                        $.ajax({
+                            url: _url,
+                            type: 'GET',
+                            success: function(res) {
+                                if (res.code == 200) {
+                                    Notif.fire({
+                                        icon: 'success',
+                                        title: res.message,
+                                    })
+                                }
+                            },
+                            error: function(err) {
+                                Notif.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Mengubah Status Return!',
+                                });
+                            }
+                        })
+
+                        getData()
+                    }
+                })
         }
     </script>
 @endsection

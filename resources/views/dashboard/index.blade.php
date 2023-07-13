@@ -189,8 +189,11 @@
                                                         @if ($data->status == 'Proses Pengiriman / Pengambilan')
                                                             <span class="badge badge-primary">{{ $data->status }}</span>
                                                         @endif
-                                                        @if ($data->status == 'Selesai')
+                                                        @if ($data->status == 'Selesai' || $data->status == 'Selesai (Return)')
                                                             <span class="badge badge-success">{{ $data->status }}</span>
+                                                        @endif
+                                                        @if ($data->status == 'Proses Return')
+                                                            <span class="badge badge-secondary">{{ $data->status }}</span>
                                                         @endif
                                                     </td>
                                                 </tr>

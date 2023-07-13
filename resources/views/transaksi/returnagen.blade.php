@@ -71,7 +71,7 @@
         <div class="modal-dialog-scrollable modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-gradient-info">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Detail Pesanan</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Detail Return</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -98,17 +98,7 @@
                                 <td id="dtl_atas_nama"></td>
                             </tr>
                             <tr>
-                                <td width="20%">Jenis Pengiriman</td>
-                                <td>:</td>
-                                <td id="dtl_jns"></td>
-                            </tr>
-                            <tr>
-                                <td width="20%">Alamat Pengiriman</td>
-                                <td>:</td>
-                                <td id="dtl_alamat"></td>
-                            </tr>
-                            <tr>
-                                <td width="20%">Status Pesanan</td>
+                                <td width="20%">Status Return</td>
                                 <td>:</td>
                                 <td id="dtl_status"></td>
                             </tr>
@@ -130,8 +120,8 @@
                             <tbody id="dtl_data">
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <td class="text-right" colspan="2">Ongkir :</td>
+                                <tr class="text-danger border-danger">
+                                    <td class="text-right" colspan="2">Biaya Return 10% :</td>
                                     <td id="dtl_ongkir" class="text-right"></td>
                                 </tr>
                                 <tr class="bg-gradient-lightblue">
@@ -211,8 +201,12 @@
                             btn_color = 'btn-info';
                         }
 
-                        if (data.status == 'Selesai') {
+                        if (data.status == 'Disetujui') {
                             btn_color = 'btn-success';
+                        }
+
+                        if (data.status == 'Ditolak') {
+                            btn_color = 'btn-danger';
                         }
 
                         htmlview += `<tr>
@@ -230,7 +224,10 @@
 
                         htmlview += `</td>
                         <td>
-                        </td>
+                        <button class="btn btn-info btn-sm" title="Detail Transaksi!" onClick="detailData('` +
+                            data.transaksi_id + `')"> <i class="fas fa-eye-open"> Detail Pesanan</i>
+                          </button>
+                          </td>
                        </tr>`
                     });
 
@@ -242,7 +239,7 @@
         }
 
         function detailData(id) {
-            var _url = "{{ route('agen.pesanan.detail', ':id') }}"
+            var _url = "{{ route('agen.return.detail', ':id') }}"
             _url = _url.replace(':id', id)
 
             var dtlView
@@ -257,23 +254,32 @@
                     $('#dtl_atas_nama').html(res.transaksi.nama)
                     $('#dtl_jns').html(res.transaksi.jenis_pengiriman)
                     $('#dtl_alamat').html(res.transaksi.alamat_pengiriman)
-                    $('#dtl_status').html(res.transaksi.status)
-                    let ongkir = formatRupiah(res.transaksi.ongkir, 'Rp. ');
-                    $('#dtl_ongkir').html(ongkir)
-                    let total = formatRupiah(res.transaksi.total, 'Rp. ');
-                    $('#dtl_total').html(total)
+
+                    let total2 = 0;
 
                     $('#dtl_data').html('')
                     $.each(res.detail_transaksi, function(i, data) {
-                        let subtotal = formatRupiah(data.sub_total_harga, 'Rp. ');
+                        let subtotal = data.jml_return * data.harga_jual;
                         dtlView += `
                         <tr>
                             <td>` + data.nama_produk + ` - (` + data.nama_kategori + `) - Rp. ` + data.harga_jual + ` /kg</td>
-                            <td>` + data.jumlah_produk + ` kg</td>
-                            <td class="text-right">` + subtotal + `</td>
+                            <td>` + data.jml_return + ` kg</td>
+                            <td class="text-right">` + formatRupiah(subtotal, 'Rp. ') + `</td>
                         </tr>
                         `
+                        total2 += subtotal
+
+                        $('#dtl_status').html(data.status)
+
+                        let total = formatRupiah(data.total, 'Rp. ');
+                        $('#dtl_total').html(total)
                     })
+
+                    let biaya = total2 * 0.1
+
+                    let ongkir = formatRupiah(biaya, '- Rp. ');
+                    $('#dtl_ongkir').html('- ' + ongkir)
+
                     $('#dtl_data').html(dtlView)
                 }
             })

@@ -26,14 +26,19 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
 
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" background="{{ asset('img/bg.jpg') }}"
+    style="background-size: 100%; -webkit-backdrop-filter: blur(5px);
+backdrop-filter: blur(5px);">
     <div class="login-box">
         <div class="login-logo">
-            <a href="#"><b>Peternakan </b>Seger</a>
+            <img src="{{ asset('img/Logo.png') }}" alt="" class="img-circle elevation-3" width="300px"> <br>
+            <a href="#" class="text-light">
+                <b>Peternakan </b>Seger
+            </a>
         </div>
         <!-- /.login-logo -->
         <div class="card">
-            <div class="card-body login-card-body">
+            <div class="card-body login-card-body opacity-25">
                 <p class="login-box-msg">Silahkan sign in untuk masuk aplikasi</p>
 
                 <form action="{{ route('login') }}" method="post" enctype="multipart/form-data">
@@ -58,7 +63,7 @@
                         <!-- /.col -->
                         <div class="col-12">
                             {{-- <a href="{{route('dashboard')}}" type="submit" class="btn btn-primary btn-block">Sign In</a> --}}
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            <button type="submit" class="btn btn-info btn-block">Sign In</button>
                         </div>
                         <!-- /.col -->
                     </div>

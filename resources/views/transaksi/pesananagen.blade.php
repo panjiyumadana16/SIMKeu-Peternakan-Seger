@@ -410,7 +410,7 @@
                             btn_color = 'btn-primary';
                         }
 
-                        if (data.status == 'Selesai') {
+                        if (data.status == 'Selesai' || data.status == 'Selesai (Return)') {
                             btn_color = 'btn-success';
                         }
 

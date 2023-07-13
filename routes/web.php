@@ -93,6 +93,13 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('data', [TransaksiController::class, 'indexDataPenjualan'])->name('penjualan.data');
             Route::get('{id}', [TransaksiController::class, 'detailData'])->name('penjualan.detail');
         });
+
+        Route::group(['prefix' => 'return'], function () {
+            Route::get('', [ReturnController::class, 'index'])->name('return');
+            Route::get('data', [ReturnController::class, 'indexData'])->name('return.data');
+            Route::get('detail/{id}', [ReturnController::class, 'detailData'])->name('return.detail');
+            Route::get('{id}/{to_status}', [ReturnController::class, 'changeStatus'])->name('return.status.change');
+        });
     });
     Route::group(['roles' => 'Agen', 'prefix' => 'agen'], function () {
         Route::get('dashboard', [HomeController::class, 'listProduk'])->name('agen.dashboard');
@@ -121,6 +128,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::post('', [ReturnController::class, 'create'])->name('agen.return.create');
             Route::get('', [ReturnController::class, 'indexAgen'])->name('agen.return');
             Route::get('data/agen', [ReturnController::class, 'indexDataAgen'])->name('agen.return.data');
+            Route::get('detail/{id}', [ReturnController::class, 'detailData'])->name('agen.return.detail');
         });
     });
 });

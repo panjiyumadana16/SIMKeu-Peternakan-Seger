@@ -2,7 +2,8 @@
  <aside class="main-sidebar sidebar-dark-primary elevation-4">
      <!-- Brand Logo -->
      <a href="#" class="brand-link bg-secondary">
-         <img src="" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
+         <img src="{{ asset('img/Logo.png') }}" alt="" class="brand-image img-circle elevation-3"
+             style="opacity: .8">
          <span class="brand-text font-weight-light">Peternakan Seger</span>
      </a>
 
@@ -98,7 +99,8 @@
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('return') }}"
+                             class="nav-link {{ request()->is('*/return') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-reply"></i>
                              <p>
                                  Data Pesanan Return

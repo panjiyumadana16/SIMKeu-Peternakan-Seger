@@ -31,7 +31,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <p class="animation__wobble">Peternakan Seger</p>
+            <img src="{{ asset('img/Logo.png') }}" class="animation__wobble brand-image img-circle elevation-3"
+                width="150px">
         </div>
 
         @include('layouts.includes.navbar')
