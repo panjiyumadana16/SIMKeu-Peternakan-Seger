@@ -48,7 +48,7 @@
                          <a href="{{ route('stok') }}" class="nav-link {{ request()->is('*/stok') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-egg"></i>
                              <p>
-                                 Stok Telur
+                                 Stok Penen
                              </p>
                          </a>
                      </li>
@@ -61,6 +61,15 @@
                              </p>
                          </a>
                      </li>
+                     <li class="nav-item">
+                        <a href="{{ route('ongkir-kota') }}"
+                            class="nav-link {{ request()->is('*/ongkir-kota') ? ' active' : '' }}">
+                            <i class="nav-icon fas fa-shipping-fast"></i>
+                            <p>
+                                Ongkir Kota
+                            </p>
+                        </a>
+                    </li>
                      <li class="nav-item">
                          <a href="{{ route('produk') }}"
                              class="nav-link {{ request()->is('*/produk') ? ' active' : '' }}">

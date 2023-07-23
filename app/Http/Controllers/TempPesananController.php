@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agen;
+use App\Models\OngkirKota;
 use App\Models\Produk;
 use App\Models\TempPesanan;
 use Illuminate\Http\Request;
@@ -17,10 +18,10 @@ class TempPesananController extends Controller
             ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
             ->where('temp_pesanans.user_id', Auth::user()->id)
             ->select('temp_pesanans.*', 'stoks.jml_stok', 'kategories.nama_kategori', 'produks.nama_produk', 'produks.harga_jual')->get();
-
+        $kota = OngkirKota::all();
         $agen = Agen::where('user_id', Auth::user()->id)->first();
 
-        return view('transaksi.keranjang', compact(['keranjang', 'agen']));
+        return view('transaksi.keranjang', compact(['keranjang', 'agen','kota']));
     }
 
     public function addKeranjang(Request $request)

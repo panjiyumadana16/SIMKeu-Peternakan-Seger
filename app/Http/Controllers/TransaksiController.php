@@ -25,12 +25,14 @@ class TransaksiController extends Controller
 
         $this->validate($request, [
             'jenis_pengiriman'  => 'required',
+            'kota'              => 'required',
+            'ongkir'            => 'required',
             'alamat_pengiriman' => 'required',
         ]);
 
         $ongkir = 0;
         if ($request->jenis_pengiriman == 'Kirim ke Alamat Pengiriman') {
-            $ongkir = 10000;
+            $ongkir = $request->ongkir;
         }
 
         Transaksi::create([
@@ -38,6 +40,7 @@ class TransaksiController extends Controller
             'tgl_transaksi'     => Carbon::now(),
             'jenis_pengiriman'  => $request->jenis_pengiriman,
             'alamat_pengiriman' => $request->alamat_pengiriman,
+            'ongkir_kota_id'    => $request->kota,
             'ongkir'            => $ongkir,
             'total'             => 0,
         ]);
@@ -75,7 +78,8 @@ class TransaksiController extends Controller
     public function indexDataAgen()
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')
+        ->join('ongkir_kotas','ongkir_kotas.id','=','transaksies.ongkir_kota_id')
+        ->select('transaksies.*', 'agens.nama','ongkir_kotas.nama_kota')
             ->where('transaksies.user_id', Auth::user()->id)->get();
         $data = [];
         $i = 0;
@@ -92,7 +96,8 @@ class TransaksiController extends Controller
     public function detailData($id)
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')
+            ->join('ongkir_kotas','ongkir_kotas.id','=','transaksies.ongkir_kota_id')
+            ->select('transaksies.*', 'agens.nama','ongkir_kotas.nama_kota')
             ->where('transaksies.id', $id)->first();
 
         $detail_tr = DetailTransaksi::join('produks', 'produks.id', '=', 'detail_transaksies.produk_id')
@@ -120,7 +125,9 @@ class TransaksiController extends Controller
     public function indexData()
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')->get();
+        ->join('ongkir_kotas','ongkir_kotas.id','=','transaksies.ongkir_kota_id')
+        ->select('transaksies.*', 'agens.nama','ongkir_kotas.nama_kota')
+        ->get();
         $data = [];
         $i = 0;
         foreach ($transaksi as $dt) {
@@ -138,7 +145,9 @@ class TransaksiController extends Controller
     public function indexDataPenjualan()
     {
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
-            ->select('transaksies.*', 'agens.nama')->where('transaksies.status', 'like', '%Selesai%')->get();
+        ->join('ongkir_kotas','ongkir_kotas.id','=','transaksies.ongkir_kota_id')
+        ->select('transaksies.*', 'agens.nama','ongkir_kotas.nama_kota')
+        ->where('transaksies.status', 'like', '%Selesai%')->get();
         $data = [];
         $i = 0;
         foreach ($transaksi as $dt) {
@@ -167,7 +176,7 @@ class TransaksiController extends Controller
                 ->select('detail_transaksies.*', 'stoks.jml_stok', 'produks.stok_id')->get();
             foreach ($detail_tr as $dt) {
                 Stok::where('id', $dt->stok_id)->update([
-                    'jml_stok' => $dt->jml_stok - $dt->jumlah_produk
+                    'jml_stok_terjual' => $dt->jml_stok_terjual + $dt->jumlah_produk
                 ]);
             }
 

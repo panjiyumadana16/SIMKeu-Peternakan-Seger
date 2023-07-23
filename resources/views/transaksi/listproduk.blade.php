@@ -35,11 +35,12 @@
                             <div class="card">
                                 <div class="card-header px-2 py-3 text-center">
                                     <h4>{{ $val->nama_produk }}</h4>
+                                    <b>Tanggal Panen : {{ date('Y-m-d',strtotime($val->tgl_diambil)) }}</b> <br>
                                     ({{ $val->nama_kategori }})
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body px-3 py-2">
-                                    <h5 class="float-left">Stok : {{ $val->jml_stok }} kg</h5>
+                                    <h5 class="float-left">Stok : {{ $val->jml_stok - $val->jml_stok_terjual }} kg</h5>
                                     <h5 class="text-success float-right">Rp. {{ $val->harga_jual }} /kg
                                     </h5>
                                 </div>

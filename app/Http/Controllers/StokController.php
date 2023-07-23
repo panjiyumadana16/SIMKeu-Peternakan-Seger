@@ -38,12 +38,12 @@ class StokController extends Controller
             ->where('kandang_id', $request->kandang_id)
             ->get();
 
-        if (count($check) > 0) {
-            return response()->json([
-                'code'      => 500,
-                'message'   => 'Data Stok Telur Sudah ada, Silahkan edit Stok Telur dengan Asal dan Kategori yang sama',
-            ]);
-        } else {
+        // if (count($check) > 0) {
+        //     return response()->json([
+        //         'code'      => 500,
+        //         'message'   => 'Data Stok Telur Sudah ada, Silahkan edit Stok Telur dengan Asal dan Kategori yang sama',
+        //     ]);
+        // } else {
             Stok::create([
                 'kategori_id'   => $request->kategori_id,
                 'kandang_id'    => $request->kandang_id,
@@ -55,7 +55,7 @@ class StokController extends Controller
                 'code'      => 200,
                 'message'   => 'Berhasil menyimpan data Stok Telur',
             ]);
-        }
+        // }
     }
 
     public function detailData($id)

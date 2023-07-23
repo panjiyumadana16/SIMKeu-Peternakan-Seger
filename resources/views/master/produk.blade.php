@@ -52,7 +52,8 @@
                                                 <th>Stok dari Kandang</th>
                                                 <th>Kategori</th>
                                                 <th>Harga Jual /kg</th>
-                                                <th>Stok</th>
+                                                <th>Sisa Stok</th>
+                                                <th>Status</th>
                                                 <th width="10%">Aksi</th>
                                             </tr>
                                         </thead>
@@ -107,9 +108,10 @@
                                         <select name="stok_id" id="" class="form-control">
                                             <option value="" disabled> Pilih Stok Kandang</option>
                                             @foreach ($stok as $data)
-                                                <option value="{{ $data->id }}">{{ $data->kandang }} -
+                                                <option value="{{ $data->id }}">{{ $data->kandang }} 
+                                                    ({{ date('Y-m-d',strtotime($data->tgl_diambil)) }}) -
                                                     {{ $data->nama_kategori }} ( STOK :
-                                                    {{ $data->jml_stok }} kg )
+                                                    {{ $data->jml_stok }} kg)
                                                 </option>
                                             @endforeach
                                         </select>
@@ -173,7 +175,7 @@
                                             @foreach ($stok as $data)
                                                 <option value="{{ $data->id }}">{{ $data->kandang }} -
                                                     {{ $data->nama_kategori }} ( STOK :
-                                                    {{ $data->jml_stok }} kg )
+                                                    {{ $data->jml_stok }} kg - {{ $data->tgl_diambil }})
                                                 </option>
                                             @endforeach
                                         </select>
@@ -286,13 +288,25 @@
                     $('tbody').html('')
                     $.each(res, function(i, data) {
                         let harga = formatRupiah(data.harga_jual, 'Rp ');
+                        let btnStatus = 'btn-danger';
+
+                        if (data.status == 'Aktif') {
+                            btnStatus = 'btn-success'
+                        }
+
                         htmlview += `<tr>
                         <td style="text-align: center;">` + data.id + `</td>
                         <td>` + data.nama_produk + `</td>
-                        <td>` + data.kandang + `</td>
+                        <td>` + data.kandang + `
+                            <br><b> Tanggal Stok : ` + data.tgl_diambil +`</b></td>
                         <td>` + data.nama_kategori + `</td>
                         <td style="text-align: right;">` + harga + `</td>
-                        <td style='text-align: right;'>` + data.jml_stok + ` kg</td>
+                        <td style='text-align: right;'>` + (data.jml_stok - data.jml_stok_terjual) + ` kg</td>
+                        <td>
+                            <button class="btn `+ btnStatus +` btn-sm container" title="Status Data!" 
+                                onClick="changeStatus('` + data.id + `')"> ` + data.status + `
+                            </button>
+                        </td>
                         <td>
                           <button class="btn btn-info btn-sm" title="Edit Data!" onClick="detailData('` + data
                             .id + `')"> <i class="fas fa-pencil-alt"></i>
@@ -324,6 +338,17 @@
 
                         Notif.fire({
                             icon: 'success',
+                            title: res.message,
+                        })
+                        $("#tbl_data").DataTable().destroy();
+                        getData()
+                    }
+                    if (res.code == 500) {
+                        $('#formAddData').trigger('reset')
+                        $('#modalAddData').modal('hide')
+
+                        Notif.fire({
+                            icon: 'error',
                             title: res.message,
                         })
                         $("#tbl_data").DataTable().destroy();
@@ -432,6 +457,41 @@
                         $.ajax({
                             url: _url,
                             type: 'DELETE',
+                            data: {
+                                _token: _token
+                            },
+                            success: function(res) {
+                                Notif.fire({
+                                    icon: 'success',
+                                    title: res.message,
+                                })
+                                $("#tbl_data").DataTable().destroy();
+                                getData();
+                            },
+                            error: function(err) {
+                                console.log(err);
+                            }
+                        })
+                    }
+                });
+        }
+
+        function changeStatus(id) {
+            Swal.fire({
+                    title: "Apakah anda yakin Ubah Status data ini?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya!",
+                    cancelButtonText: "Tidak",
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        var _url = "{{ route('produk.changeStatus', ':id') }}";
+                        _url = _url.replace(':id', id)
+                        var _token = $('meta[name="csrf-token"]').attr('content');
+                        $.ajax({
+                            url: _url,
+                            type: 'PUT',
                             data: {
                                 _token: _token
                             },

@@ -16,6 +16,8 @@ class HomeController extends Controller
     public function index()
     {
         $stokTelur = Stok::sum('jml_stok');
+        $stokTelur2 = Stok::sum('jml_stok_terjual');
+        $stokTelur = $stokTelur - $stokTelur2;
         $kandang = Kandang::all()->count();
         $jmlTransaksi = Transaksi::all()->count();
         $jmlAgen = Agen::all()->count();
@@ -23,7 +25,14 @@ class HomeController extends Controller
         $lastProduk = Produk::join('stoks', 'stoks.id', '=', 'produks.stok_id')
             ->join('kandangs', 'kandangs.id', '=', 'stoks.kandang_id')
             ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
-            ->select('produks.*', 'kategories.nama_kategori', 'kandangs.kandang', 'stoks.jml_stok')
+            ->select('produks.*', 'kategories.nama_kategori'
+            , 'kandangs.kandang', 'stoks.jml_stok'
+            , 'stoks.jml_stok_terjual' ,'stoks.tgl_diambil')
+            ->latest()->take(5)->get();
+
+        $lastStok = Stok::join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
+            ->join('kandangs', 'kandangs.id', '=', 'stoks.kandang_id')
+            ->select('stoks.*', 'kategories.nama_kategori', 'kandangs.kandang')
             ->latest()->take(5)->get();
 
         $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
@@ -52,7 +61,7 @@ class HomeController extends Controller
             $dataChart[] += $chartData;
         }
 
-        return view('dashboard.index', compact(['stokTelur', 'kandang', 'jmlTransaksi', 'jmlAgen', 'lastProduk', 'lastTransaksi', 'labelChart', 'dataChart']));
+        return view('dashboard.index', compact(['stokTelur', 'kandang', 'jmlTransaksi', 'jmlAgen', 'lastProduk', 'lastTransaksi', 'labelChart', 'dataChart', 'lastStok']));
     }
 
     public function listProduk()
@@ -60,8 +69,11 @@ class HomeController extends Controller
         $data = Produk::join('stoks', 'stoks.id', '=', 'produks.stok_id')
             ->join('kandangs', 'kandangs.id', '=', 'stoks.kandang_id')
             ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
-            ->select('produks.*', 'kategories.nama_kategori', 'kandangs.kandang', 'stoks.jml_stok')
-            ->get();
+            ->select('produks.*', 'kategories.nama_kategori'
+            , 'kandangs.kandang', 'stoks.jml_stok'
+            , 'stoks.jml_stok_terjual' ,'stoks.tgl_diambil')
+            ->where('produks.status' ,'Aktif')
+            ->latest()->get();
 
         return view('transaksi.listproduk', compact(['data']));
     }

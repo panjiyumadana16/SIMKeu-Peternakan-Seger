@@ -11,7 +11,7 @@ class Produk extends Model
     use HasFactory;
     protected $table = 'produks';
     protected $fillable = [
-        'nama_produk', 'harga_jual', 'stok_id'
+        'nama_produk', 'harga_jual', 'stok_id', 'status'
     ];
 
     public function kandang()

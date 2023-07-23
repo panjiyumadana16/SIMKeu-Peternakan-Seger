@@ -24,7 +24,7 @@ class ProdukController extends Controller
         $data = Produk::join('stoks', 'stoks.id', '=', 'produks.stok_id')
             ->join('kandangs', 'kandangs.id', '=', 'stoks.kandang_id')
             ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
-            ->select('produks.*', 'kategories.nama_kategori', 'kandangs.kandang', 'stoks.jml_stok')
+            ->select('produks.*', 'kategories.nama_kategori', 'kandangs.kandang', 'stoks.jml_stok', 'stoks.jml_stok_terjual', 'stoks.tgl_diambil')
             ->get();
         return response()->json($data);
     }
@@ -37,16 +37,26 @@ class ProdukController extends Controller
             'harga_jual'   => 'required|numeric',
         ]);
 
-        Produk::create([
-            'nama_produk'  => $request->nama_produk,
-            'stok_id'      => $request->stok_id,
-            'harga_jual'   => $request->harga_jual,
-        ]);
+        $check = Produk::where('stok_id', $request->stok_id)->get()->count();
+        if ($check < 1) {
+            Produk::create([
+                'nama_produk'  => $request->nama_produk,
+                'stok_id'      => $request->stok_id,
+                'harga_jual'   => $request->harga_jual,
+            ]);
+            
+            return response()->json([
+                'code'      => 200,
+                'message'   => 'Berhasil menyimpan data Produk',
+            ]);
 
-        return response()->json([
-            'code'      => 200,
-            'message'   => 'Berhasil menyimpan data Produk',
-        ]);
+        } else {
+            return response()->json([
+                'code'      => 500,
+                'message'   => 'Stok Produk Sudah Ditambahkan',
+            ]);
+            
+        }
     }
 
     public function detailData($id)
@@ -82,6 +92,25 @@ class ProdukController extends Controller
         return response()->json([
             'code' => 200,
             'message' => 'Berhasil Hapus data Produk',
+        ]);
+    }
+
+    public function changeStatus($id) {
+        $check = Produk::where('id', $id);
+        $checkStatus = $check->first();
+        if($checkStatus->status == 'Aktif'){
+            $check->update([
+                'status' => 'Tidak Aktif',
+            ]);
+        } else {
+            $check->update([
+                'status' => 'Aktif',
+            ]);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil ubah Status Produk',
         ]);
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KandangController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\OngkirKotaController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\StokController;
@@ -63,6 +64,15 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::delete('{id}', [KategoriController::class, 'deleteData'])->name('kategori.delete');
         });
 
+        Route::group(['prefix' => 'ongkir-kota'], function () {
+            Route::get('', [OngkirKotaController::class, 'index'])->name('ongkir-kota');
+            Route::get('data', [OngkirKotaController::class, 'indexData'])->name('ongkir-kota.data');
+            Route::post('', [OngkirKotaController::class, 'addData'])->name('ongkir-kota.add');
+            Route::get('{id}', [OngkirKotaController::class, 'detailData'])->name('ongkir-kota.detail');
+            Route::put('{id}', [OngkirKotaController::class, 'updateData'])->name('ongkir-kota.update');
+            Route::delete('{id}', [OngkirKotaController::class, 'deleteData'])->name('ongkir-kota.delete');
+        });
+
         Route::group(['prefix' => 'produk'], function () {
             Route::get('', [ProdukController::class, 'index'])->name('produk');
             Route::get('data', [ProdukController::class, 'indexData'])->name('produk.data');
@@ -70,6 +80,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('{id}', [ProdukController::class, 'detailData'])->name('produk.detail');
             Route::put('{id}', [ProdukController::class, 'updateData'])->name('produk.update');
             Route::delete('{id}', [ProdukController::class, 'deleteData'])->name('produk.delete');
+            Route::put('{id}/status', [ProdukController::class, 'changeStatus'])->name('produk.changeStatus');
         });
 
         Route::group(['prefix' => 'agen'], function () {

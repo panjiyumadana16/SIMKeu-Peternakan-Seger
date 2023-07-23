@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             KategoriSeeder::class,
             KandangSeeder::class,
             StokSeeder::class,
+            OngkirKotaSeeder::class,
         ]);
     }
 }

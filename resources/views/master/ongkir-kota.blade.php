@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Stok Panen')
+@section('title', 'Ongkir Kota')
 
 @section('content')
     <!-- Content Wrapper. Contains page content -->
@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Master Stok Panen</h1>
+                        <h1 class="m-0">Master Ongkir KOta</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Master</a></li>
-                            <li class="breadcrumb-item active">Stok Panen</li>
+                            <li class="breadcrumb-item active">Ongkir Kota</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -31,7 +31,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title">Data Stok Panen</h5>
+                                <h5 class="card-title">Data Ongkir Kota</h5>
 
                                 <div class="card-tools">
                                     <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalAddData">
@@ -48,12 +48,8 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%" style="text-align: center;">ID</th>
-                                                <th>Asal Stok</th>
-                                                <th>Kategori Stok</th>
-                                                <th>Tanggal Diambil</th>
-                                                <th class="border border-primary">Stok (kg)</th>
-                                                <th class="border border-success">Stok Terjual (kg)</th>
-                                                <th class="border border-info">Stok Tersisa (kg)</th>
+                                                <th>Nama Kota</th>
+                                                <th class="text-right" width="20%">Biaya Ongkir</th>
                                                 <th width="10%">Aksi</th>
                                             </tr>
                                         </thead>
@@ -91,48 +87,21 @@
                         novalidate>
                         @csrf
                         <div class="row">
-                            <div class="col-md-12">
-                                <label for="kandang_id">Asal Stok</label>
+                            <div class="col-md-6">
+                                <label for="nama_kota">Nama Kota</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <select name="kandang_id" id="" class="form-control">
-                                            @foreach ($kandang as $data)
-                                                <option value="{{ $data->id }}">
-                                                    {{ $data->kandang }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" placeholder="Nama Kota" name="nama_kota"
+                                            class="form-control">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label for="kategori_id">Kategori Stok</label>
+                            <div class="col-md-6">
+                                <label for="biaya_ongkir">Biaya Ongkir</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <select name="kategori_id" id="" class="form-control">
-                                            @foreach ($kategori as $data)
-                                                <option value="{{ $data->id }}">
-                                                    {{ $data->nama_kategori }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="tgl_diambil">Tanggal DIambil</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <input type="datetime-local" class="form-control" name="tgl_diambil">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="jml_stok">Jumlah Stok (kg)</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <input type="number" class="form-control" name="jml_stok" min="0"
-                                            value="0">
+                                        <input type="number" min="0" placeholder="Biaya Ongkir" name="biaya_ongkir"
+                                            class="form-control" value="0">
                                     </div>
                                 </div>
                             </div>
@@ -164,38 +133,21 @@
                         @csrf
                         <input type="hidden" name="id">
                         <div class="row">
-                            <div class="col-md-12">
-                                <label for="kandang">Asal Stok</label>
+                            <div class="col-md-6">
+                                <label for="nama_kota">Nama Kota</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <input type="text" name="kandang" id="" readonly
+                                        <input type="text" placeholder="Nama Kota" name="nama_kota"
                                             class="form-control">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label for="nama_kategori">Kategori Stok</label>
+                            <div class="col-md-6">
+                                <label for="biaya_ongkir">Biaya Ongkir</label>
                                 <div class="col-md-14 row">
                                     <div class="col-md-12">
-                                        <input type="text" name="nama_kategori" id="" readonly
+                                        <input type="number" min="0" placeholder="" name="biaya_ongkir"
                                             class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="tgl_diambil">Tanggal DIambil</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <input type="datetime-local" class="form-control" name="tgl_diambil">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="jml_stok">Jumlah Stok (kg)</label>
-                                <div class="col-md-14 row">
-                                    <div class="col-md-12">
-                                        <input type="number" class="form-control" name="jml_stok" min="0"
-                                            value="0">
                                     </div>
                                 </div>
                             </div>
@@ -288,22 +240,16 @@
         function getData() {
             var htmlview
             $.ajax({
-                url: "{{ route('stok.data') }}",
+                url: "{{ route('ongkir-kota.data') }}",
                 type: 'GET',
                 success: function(res) {
                     $('tbody').html('')
                     $.each(res, function(i, data) {
+                        const ongkir = formatRupiah(data.biaya_ongkir.toString(), 'Rp. ')
                         htmlview += `<tr>
                         <td style="text-align: center;">` + data.id + `</td>
-                        <td>` + data.kandang + `</td>
-                        <td>` + data.nama_kategori + `</td>
-                        <td>` + data.tgl_diambil + `</td>
-                        <td style="text-align: right; background-color: rgba(0,123,255,0.15);">` 
-                            + data.jml_stok + ` kg</td>
-                        <td style="text-align: right; background-color: rgba(40,167,69,0.15);">` 
-                            + data.jml_stok_terjual + ` kg</td>
-                        <td style="text-align: right; background-color: rgba(23,162,184,0.15);">` 
-                            + (data.jml_stok - data.jml_stok_terjual) + ` kg</td>
+                        <td>` + data.nama_kota + `</td>
+                        <td class="text-right">` + ongkir + `</td>
                         <td>
                           <button class="btn btn-info btn-sm" title="Edit Data!" onClick="detailData('` + data
                             .id + `')"> <i class="fas fa-pencil-alt"></i>
@@ -324,7 +270,7 @@
 
         function addData() {
             $.ajax({
-                url: "{{ route('stok.add') }}",
+                url: "{{ route('ongkir-kota.add') }}",
                 type: "POST",
                 data: $('#formAddData').serialize(),
                 dataType: 'json',
@@ -339,12 +285,6 @@
                         })
                         $("#tbl_data").DataTable().destroy();
                         getData()
-                    } else {
-                        Swal.fire({
-                            title: res.message,
-                            icon: "warning",
-                            confirmButtonText: "Close",
-                        })
                     }
                 },
                 error: function(err) {
@@ -352,7 +292,7 @@
                         icon: 'error',
                         title: 'Gagal Menyimpan Data!',
                     });
-                    console.log($('#formAddData').serialize());
+
                     $.each(err.responseJSON.errors, function(i, error) {
                         var el = $('#formAddData').find('[name="' + i + '"]');
                         el.addClass('is-invalid');
@@ -363,7 +303,7 @@
         }
 
         function detailData(id) {
-            var _url = "{{ route('stok.detail', ':id') }}"
+            var _url = "{{ route('ongkir-kota.detail', ':id') }}"
             _url = _url.replace(':id', id)
 
             $.ajax({
@@ -382,7 +322,7 @@
 
         function updateData() {
             var id = $('#formEditData').find('input[name="id"]').val()
-            var _url = "{{ route('stok.update', ':id') }}"
+            var _url = "{{ route('ongkir-kota.update', ':id') }}"
             _url = _url.replace(':id', id)
 
             $.ajax({
@@ -402,12 +342,6 @@
                         })
                         $("#tbl_data").DataTable().destroy();
                         getData()
-                    } else {
-                        Swal.fire({
-                            title: res.message,
-                            icon: "warning",
-                            confirmButtonText: "Close",
-                        })
                     }
                 },
                 error: function(err) {
@@ -449,7 +383,7 @@
                 })
                 .then((result) => {
                     if (result.isConfirmed) {
-                        var _url = "{{ route('stok.delete', ':id') }}";
+                        var _url = "{{ route('ongkir-kota.delete', ':id') }}";
                         _url = _url.replace(':id', id)
                         var _token = $('meta[name="csrf-token"]').attr('content');
                         $.ajax({

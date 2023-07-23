@@ -20,13 +20,13 @@ class StokSeeder extends Seeder
                 'kandang_id'    => 1,
                 'kategori_id'   => 1,
                 'tgl_diambil'   => Carbon::now(),
-                'jml_stok'      => 650,
+                'jml_stok'      => 100,
             ],
             [
                 'kandang_id'    => 2,
                 'kategori_id'   => 2,
                 'tgl_diambil'   => Carbon::now(),
-                'jml_stok'      => 500,
+                'jml_stok'      => 150,
             ],
         ]);
     }

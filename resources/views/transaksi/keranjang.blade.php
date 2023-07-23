@@ -44,7 +44,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Produk</th>
-                                                <th width="15%">Jumlah Dibeli</th>
+                                                <th width="15%">Jumlah Dibeli (kg)</th>
                                                 <th width="20%">Sub Total</th>
                                                 <th width="5%">Aksi</th>
                                             </tr>
@@ -60,13 +60,14 @@
                                                 <tr>
                                                     <td>
                                                         {{ $data->nama_produk }} - ({{ $data->nama_kategori }}) - Rp.
-                                                        {{ $data->harga_jual }} /butir
+                                                        {{ $data->harga_jual }} /kg
                                                         <br>
-                                                        Stok : {{ $data->jml_stok }} butir
+                                                        Stok : <span class="sisa_stok">{{ $data->jml_stok - $data->jml_stok_terjual }}</span> kg
                                                     </td>
                                                     <td width="15%">
                                                         <input type="number" id="" data-id="{{ $data->id }}"
-                                                            value="{{ $data->jumlah }}" class="form-control jumlah_beli">
+                                                            value="{{ $data->jumlah }}" class="form-control jumlah_beli"
+                                                            max="{{ $data->jml_stok - $data->jml_stok_terjual }}">
                                                     </td>
                                                     <td width="20%" class="sub_total text-right">Rp.
                                                         {{ $data->subtotal }}
@@ -94,7 +95,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="atas_nama">Pesanan Atas Nama</label>
                                         <div class="col-md-14 row">
                                             <div class="col-md-12">
@@ -103,7 +104,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <label for="jenis_pengiriman">Metode Pengiriman</label>
                                         <div class="col-md-14 row">
                                             <div class="col-md-12">
@@ -117,12 +118,25 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 mt-2">
+                                    <div class="col-md-4 mt-2">
+                                        <label for="kota">Kota Pengiriman</label>
+                                        <div class="col-md-14 row">
+                                            <div class="col-md-12">
+                                                <select name="kota" class="form-control">
+                                                    <option value="" disabled selected>Pilih Kota
+                                                    </option>
+                                                    @foreach ($kota as $dt)
+                                                        <option value="{{$dt->id}}" data-ongkir_{{$dt->id}}="{{$dt->biaya_ongkir}}">{{$dt->nama_kota}} (Ongkir: Rp. {{$dt->biaya_ongkir}})</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 mt-2">
                                         <label for="alamat_pengiriman">Alamat Pengiriman</label>
                                         <div class="col-md-14 row">
                                             <div class="col-md-12">
-                                                <textarea placeholder="Alamat Pengiriman" name="alamat_pengiriman" class="form-control"> {{ $agen->alamat }}
-                                                </textarea>
+                                                <textarea placeholder="Alamat Pengiriman" name="alamat_pengiriman" class="form-control">{{ $agen->alamat }}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -199,33 +213,63 @@
             timerProgressBar: true,
         })
 
-        $('.jumlah_beli').on('change', function(e) {
+        $('.jumlah_beli').on('keyup', function(e) {
             e.preventDefault()
             var getID = $(this).data('id')
             var getVal = $(this).val()
             var $this = $(this)
+            var sisa = $this.closest('tr').find('.sisa_stok').html()
 
-            $.ajax({
-                url: "{{ route('agen.keranjang.update') }}",
-                type: "POST",
-                data: {
-                    'id': getID,
-                    'jumlah': getVal
-                },
-                dataType: 'json',
-                success: function(res) {
-                    if (res.code == 200) {
-                        $this.closest('tr').find('td.sub_total').html('Rp. ' + res.sub_total)
+            if (parseInt(getVal) > parseInt(sisa)) {
+                Notif.fire({
+                    icon: 'error',
+                    title: 'Jumlah Dibeli melebihi stok yang tersedia!'+sisa,
+                });
+                $(this).val(0)
+
+                $.ajax({
+                    url: "{{ route('agen.keranjang.update') }}",
+                    type: "POST",
+                    data: {
+                        'id': getID,
+                        'jumlah': 0,
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code == 200) {
+                            $this.closest('tr').find('td.sub_total').html('Rp. ' + res.sub_total)
+                        }
+                    },
+                    error: function(err) {
+                        Notif.fire({
+                            icon: 'error',
+                            title: 'Gagal Update Jumlah!',
+                        });
                     }
-                },
-                error: function(err) {
-                    Notif.fire({
-                        icon: 'error',
-                        title: 'Gagal Update Jumlah!',
-                    });
-                }
-            })
+                })
 
+            } else {
+                $.ajax({
+                    url: "{{ route('agen.keranjang.update') }}",
+                    type: "POST",
+                    data: {
+                        'id': getID,
+                        'jumlah': getVal
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code == 200) {
+                            $this.closest('tr').find('td.sub_total').html('Rp. ' + res.sub_total)
+                        }
+                    },
+                    error: function(err) {
+                        Notif.fire({
+                            icon: 'error',
+                            title: 'Gagal Update Jumlah!',
+                        });
+                    }
+                })
+            }
             updateTotal()
         })
 
@@ -260,6 +304,15 @@
 
         function updateTotal() {
             var jnsPengiriman = $('select[name="jenis_pengiriman"]').val()
+            var kota = $('select[name="kota"]').val()
+            var ongkir = 0
+
+            @foreach ($kota as $value)
+                if (kota == {{$value->id}}){
+                    ongkir = {{ $value->biaya_ongkir }};
+                }
+            @endforeach
+
             $.ajax({
                 url: "{{ route('agen.keranjang.gettotal') }}",
                 type: "GET",
@@ -268,7 +321,7 @@
                     if (res.code == 200) {
                         var total = res.total
                         if (jnsPengiriman == 'Kirim ke Alamat Pengiriman') {
-                            total = total + 10000
+                            total = total + ongkir
                         }
                         $('#total_pembayaran').html('Rp. ' + total)
                     }
@@ -280,6 +333,11 @@
         }
 
         $('select[name="jenis_pengiriman"]').on('change', function(e) {
+            e.preventDefault()
+            updateTotal()
+        })
+
+        $('select[name="kota"]').on('change', function(e) {
             e.preventDefault()
             updateTotal()
         })
@@ -320,9 +378,17 @@
         $('#checkout').on('click', function(e) {
             e.preventDefault()
             let jenis_pengiriman = $('select[name="jenis_pengiriman"]').val()
+            let kota = $('select[name="kota"]').val()
             let alamat_pengiriman = $('textarea[name="alamat_pengiriman"]').val()
+            var ongkir = 0
 
-            if (jenis_pengiriman === '' || alamat_pengiriman === '') {
+            @foreach ($kota as $value)
+                if (kota == {{$value->id}}){
+                    ongkir = {{ $value->biaya_ongkir }};
+                }
+            @endforeach
+
+            if (jenis_pengiriman == null || alamat_pengiriman == null || kota == null) {
                 Notif.fire({
                     icon: 'warning',
                     title: 'Ada form yang masih kosong!',
@@ -333,6 +399,8 @@
                     type: "POST",
                     data: {
                         'jenis_pengiriman': jenis_pengiriman,
+                        'kota': kota,
+                        'ongkir' : ongkir,
                         'alamat_pengiriman': alamat_pengiriman
                     },
                     dataType: 'json',

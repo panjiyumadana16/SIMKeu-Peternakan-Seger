@@ -264,7 +264,7 @@
                         <td>` + data.jumlah_pesanan + `</td>
                         <td style="text-align: right;">` + total + `</td>
                         <td>` + data.jenis_pengiriman + `</td>
-                        <td>` + data.alamat_pengiriman + `</td>
+                        <td>`+data.nama_kota+` - ` + data.alamat_pengiriman + `</td>
                         <td>
                           <button class="btn ` + btn_color + ` btn-sm container" onClick="changeStatus(` + data.id +
                             `,` + to_status + `)" title="Status Transaksi!">
@@ -301,7 +301,7 @@
                     $('.tgl_pesanan').html('Tanggal Pesanan : ' + res.transaksi.tgl_transaksi)
                     $('#dtl_atas_nama').html(res.transaksi.nama)
                     $('#dtl_jns').html(res.transaksi.jenis_pengiriman)
-                    $('#dtl_alamat').html(res.transaksi.alamat_pengiriman)
+                    $('#dtl_alamat').html(res.transaksi.nama_kota + ' - ' + res.transaksi.alamat_pengiriman)
                     $('#dtl_status').html(res.transaksi.status)
                     let total = formatRupiah(res.transaksi.total, 'Rp. ');
                     $('#dtl_total').html(total)
@@ -348,6 +348,8 @@
                                         title: res.message,
                                     })
                                 }
+                                
+                                getData()
                             },
                             error: function(err) {
                                 Notif.fire({
@@ -356,8 +358,6 @@
                                 });
                             }
                         })
-
-                        getData()
                     }
                 })
         }
