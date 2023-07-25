@@ -62,7 +62,8 @@
                                                         {{ $data->nama_produk }} - ({{ $data->nama_kategori }}) - Rp.
                                                         {{ $data->harga_jual }} /kg
                                                         <br>
-                                                        Stok : <span class="sisa_stok">{{ $data->jml_stok - $data->jml_stok_terjual }}</span> kg
+                                                        Stok : 
+                                                        <b class="sisa_stok">{{ ($data->jml_stok - $data->jml_stok_terjual) }}</b> kg
                                                     </td>
                                                     <td width="15%">
                                                         <input type="number" id="" data-id="{{ $data->id }}"

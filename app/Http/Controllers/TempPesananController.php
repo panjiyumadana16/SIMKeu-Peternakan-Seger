@@ -17,7 +17,7 @@ class TempPesananController extends Controller
             ->join('stoks', 'stoks.id', '=', 'produks.stok_id')
             ->join('kategories', 'kategories.id', '=', 'stoks.kategori_id')
             ->where('temp_pesanans.user_id', Auth::user()->id)
-            ->select('temp_pesanans.*', 'stoks.jml_stok', 'kategories.nama_kategori', 'produks.nama_produk', 'produks.harga_jual')->get();
+            ->select('temp_pesanans.*', 'stoks.jml_stok', 'stoks.jml_stok_terjual', 'kategories.nama_kategori', 'produks.nama_produk', 'produks.harga_jual')->get();
         $kota = OngkirKota::all();
         $agen = Agen::where('user_id', Auth::user()->id)->first();
 

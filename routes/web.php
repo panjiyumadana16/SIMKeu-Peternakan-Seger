@@ -111,6 +111,13 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('detail/{id}', [ReturnController::class, 'detailData'])->name('return.detail');
             Route::get('{id}/{to_status}', [ReturnController::class, 'changeStatus'])->name('return.status.change');
         });
+
+        Route::group(['prefix' => 'laporan-pendapatan'], function () {
+            Route::get('', [TransaksiController::class, 'laporanView'])->name('laporan');
+            Route::post('data', [TransaksiController::class, 'laporanPendapatan'])->name('laporan.data');
+            Route::post('data/print', [TransaksiController::class, 'laporanPendapatanPrintCheck'])->name('laporan.data.print');
+            Route::get('print/{tgl_awal}/{tgl_akhir}', [TransaksiController::class, 'laporanPendapatanPrint'])->name('laporan.print');
+        });
     });
     Route::group(['roles' => 'Agen', 'prefix' => 'agen'], function () {
         Route::get('dashboard', [HomeController::class, 'listProduk'])->name('agen.dashboard');

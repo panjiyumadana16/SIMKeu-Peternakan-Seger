@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailTransaksi;
+use App\Models\ReturnTransaksi;
 use App\Models\Stok;
 use App\Models\TempPesanan;
 use App\Models\Transaksi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
@@ -20,6 +22,17 @@ class TransaksiController extends Controller
             return response()->json([
                 'code'      => 400,
                 'message'   => 'Keranjang Belanjaan anda kosong!',
+            ]);
+        }
+        $jml_pesanan = 0;
+        foreach ($keranjang as $dt) {
+            $jml_pesanan = $jml_pesanan + $dt->jumlah;
+        }
+
+        if ($jml_pesanan < 10 && $request->jenis_pengiriman == 'Kirim ke Alamat Pengiriman') {
+            return response()->json([
+                'code'      => 400,
+                'message'   => 'Minimal 10kg total pesanan untuk jenis pengiriman "Kirim ke Alamat Pengiriman"!',
             ]);
         }
 
@@ -173,7 +186,7 @@ class TransaksiController extends Controller
             $detail_tr = DetailTransaksi::join('produks', 'produks.id', '=', 'detail_transaksies.produk_id')
                 ->join('stoks', 'stoks.id', '=', 'produks.stok_id')
                 ->where('detail_transaksies.transaksi_id', $id)
-                ->select('detail_transaksies.*', 'stoks.jml_stok', 'produks.stok_id')->get();
+                ->select('detail_transaksies.*', 'stoks.jml_stok','stoks.jml_stok_terjual', 'produks.stok_id')->get();
             foreach ($detail_tr as $dt) {
                 Stok::where('id', $dt->stok_id)->update([
                     'jml_stok_terjual' => $dt->jml_stok_terjual + $dt->jumlah_produk
@@ -228,5 +241,110 @@ class TransaksiController extends Controller
             'code'      => 200,
             'snapToken' => $snapToken,
         ]);
+    }
+
+    public function laporanView() {
+        return view('laporan.index');
+    }
+
+    public function laporanPendapatan(Request $request) {
+        $tgl_awal_a = '';
+        $tgl_akhir_a = '';
+        if ($request->tgl_awal == '' || $request->tgl_akhir == '') {
+            return response()->json([
+                'code'      => 400,
+                'message'   => 'Tanggal Belum ditentukan!',
+            ]);
+        } else {
+            $tgl_awal_a = $request->tgl_awal . ' 00:00:01';
+            $tgl_akhir_a = $request->tgl_akhir . ' 23:59:59';
+        }
+
+        if ($request->tgl_awal > $request->tgl_akhir) {
+            return response()->json([
+                'code'      => 400,
+                'message'   => 'Tanggal tidak valid!',
+            ]);
+        }
+
+        $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
+        ->join('ongkir_kotas','ongkir_kotas.id','=','transaksies.ongkir_kota_id')
+        ->select('transaksies.*', 'agens.nama','ongkir_kotas.nama_kota')
+        ->whereBetween('transaksies.tgl_transaksi', [$tgl_awal_a, $tgl_akhir_a])
+        ->where('transaksies.status','LIKE','%Selesai%')
+        ->get();
+
+        $data = [];
+        $no = 0;
+        foreach ($transaksi as $val) {
+            if ($val->status == 'Selesai') {
+                $data[$no] = $val;
+            } else {
+                $get_return = ReturnTransaksi::where('transaksi_id',$val->id)->first();
+                $data[$no] = $val;
+                $data[$no]['return_total'] = $get_return->total;
+                $data[$no]['total'] = $val->total - $get_return->total;
+            }
+            $no = $no + 1;
+        }
+
+        return response()->json($data);
+    }
+
+    public function laporanPendapatanPrintCheck(Request $request) {
+        if ($request->tgl_awal == '' || $request->tgl_akhir == '') {
+            return response()->json([
+                'code'      => 400,
+                'message'   => 'Tanggal Belum ditentukan!',
+            ]);
+        }
+
+        if ($request->tgl_awal > $request->tgl_akhir) {
+            return response()->json([
+                'code'      => 400,
+                'message'   => 'Tanggal tidak valid!',
+            ]);
+        }
+
+        return response()->json([
+            'code'      => 200,
+            'message'   => 'Proses Generate PDF!',
+        ]);
+    }
+
+    public function laporanPendapatanPrint($start, $end){
+
+        $tgl_awal_a = $start . ' 00:00:01';
+        $tgl_akhir_a = $end . ' 23:59:59';
+
+        $tgl_awal = $start;
+        $tgl_akhir = $end;
+
+        $transaksi = Transaksi::join('agens', 'agens.user_id', '=', 'transaksies.user_id')
+        ->join('ongkir_kotas','ongkir_kotas.id','=','transaksies.ongkir_kota_id')
+        ->select('transaksies.*', 'agens.nama','ongkir_kotas.nama_kota')
+        ->whereBetween('transaksies.tgl_transaksi', [$tgl_awal_a, $tgl_akhir_a])
+        ->where('transaksies.status','LIKE','%Selesai%')
+        ->get();
+
+        $data = [];
+        $no = 0;
+        $total_pendapatan = 0;
+        foreach ($transaksi as $val) {
+            if ($val->status == 'Selesai') {
+                $data[$no] = $val;
+            } else {
+                $get_return = ReturnTransaksi::where('transaksi_id',$val->id)->first();
+                $data[$no] = $val;
+                $data[$no]['return_total'] = $get_return->total;
+                $data[$no]['total'] = $val->total - $get_return->total;
+            }
+            $total_pendapatan = $total_pendapatan + $data[$no]['total'];
+            $no = $no + 1;
+        }
+
+        $pdf = Pdf::loadView('laporan.pdf.index', compact(['data', 'tgl_awal', 'tgl_akhir','total_pendapatan']));
+        $pdf->setPaper('A4','potrait');
+        return $pdf->stream('Cetak Laporan Pendapatan - '.date('Y-m-d H:i:s').'.pdf');
     }
 }

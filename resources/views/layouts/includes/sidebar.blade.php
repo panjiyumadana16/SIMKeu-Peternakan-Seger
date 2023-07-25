@@ -118,21 +118,22 @@
                      </li>
                      <li class="nav-header">LAPORAN KEUANGAN</li>
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                        <a href="{{ route('laporan') }}"
+                        class="nav-link {{ request()->is('*/laporan-pendapatan') ? ' active' : '' }}">
                              <i class="nav-icon fas fa-home"></i>
                              <p>
                                  Laporan Pendapatan
                              </p>
                          </a>
                      </li>
-                     <li class="nav-item">
+                     {{-- <li class="nav-item">
                          <a href="" class="nav-link">
                              <i class="nav-icon fas fa-home"></i>
                              <p>
                                  Laporan Pengeluaran
                              </p>
                          </a>
-                     </li>
+                     </li> --}}
                  </ul>
              </nav>
          @elseif(Auth::user()->role_id == 2)
